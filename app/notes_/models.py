@@ -2,20 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# class Colors(models.TextChoices):
-#     WHITE = "white", _("white")
-#     RED = "red", _("red")
-#     YELLOW = "yellow", _("yellow")
-#     ORANGE = "orange", _("orange")
-#     BLUE = "blue", _("blue")
-#     TEAL = "teal", _("teal")
-#     GREEN = "green", _("green")
-#     PURPLE = "purple", _("purple")
-#     PINK = "pink", _("pink")
-#     GRAY = "gray", _("gray")
-#     BROWN = "brown", _("brown")
-
-
 class Note(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255, blank=True)

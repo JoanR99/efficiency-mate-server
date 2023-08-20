@@ -1,5 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from .serializers import NoteSerializer, CreateNoteSerializer
 from .models import Note
 
@@ -13,11 +15,19 @@ class NotesListCreateApiView(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     permissions_class = (permissions.IsAuthenticated,)
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["color", "is_archived", "is_pinned"]
+    search_fields = ["title", "content"]
+    ordering_fields = ["updated_at"]
+    ordering = ["-updated_at"]
 
-    def get(self, request):
-        notes = Note.objects.filter(author=request.user.id)
-        serializer = self.get_serializer(notes, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        return Note.objects.filter(author=user)
 
     def post(self, request):
         serializer = CreateNoteSerializer(data=request.data)
