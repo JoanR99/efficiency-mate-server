@@ -20,10 +20,10 @@ class NotesListCreateApiView(generics.ListCreateAPIView):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["color", "is_archived", "is_pinned"]
+    filterset_fields = ["color", "is_archived"]
     search_fields = ["title", "content"]
-    ordering_fields = ["updated_at"]
-    ordering = ["-updated_at"]
+    ordering_fields = ["created_at"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         user = self.request.user
@@ -36,12 +36,7 @@ class NotesListCreateApiView(generics.ListCreateAPIView):
         note.author = request.user
         note.save()
         return Response(
-            {
-                "note": NoteSerializer(
-                    note, context=self.get_serializer_context()
-                ).data,
-                "message": "Note Created Successfully",
-            },
+            NoteSerializer(note, context=self.get_serializer_context()).data,
             status=status.HTTP_201_CREATED,
         )
 
